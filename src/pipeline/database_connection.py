@@ -1,8 +1,9 @@
 import os
+from urllib.parse import quote
+
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from dotenv import load_dotenv
-from urllib.parse import quote
 
 # Carregar as variáveis do .env
 load_dotenv()

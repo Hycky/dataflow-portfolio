@@ -20,6 +20,8 @@ blue = "^0.9.1"
 isort = "^6.0.1"
 taskipy = "^1.14.1"
 poetry-plugin-export = "^1.9.0"
+pre-commit = "^4.1.0"
+safety = "^3.3.1"
 
 [build-system]
 requires = ["poetry-core"]
@@ -28,3 +30,9 @@ build-backend = "poetry.core.masonry.api"
 [tool.taskipy.tasks]
 format = "isort . && blue ."
 test = "poetry run pytest -v"
+precommit = "pre-commit run --all-files"
+precommit-install = "pre-commit install"
+
+
+[tool.isort]
+profile = "black"
