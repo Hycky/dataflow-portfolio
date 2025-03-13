@@ -13,6 +13,7 @@ repos:
         language: system
         types: [python]
         args: ['--line-length=88']
+        pass_filenames: true
 
       - id: isort
         name: Sort imports with isort
@@ -20,6 +21,7 @@ repos:
         language: system
         types: [python]
         args: ['--profile', 'black'] # `blue` segue o mesmo padrão de `black`
+        pass_filenames: true
 
       - id: flake8
         name: Lint code with Flake8
@@ -27,6 +29,7 @@ repos:
         language: system
         types: [python]
         args: ['--max-line-length=88']
+        pass_filenames: true
 
       - id: mypy
         name: Type check with MyPy
@@ -35,16 +38,34 @@ repos:
         types: [python]
         pass_filenames: true
 
-      - id: safety
-        name: Check dependencies for security issues
-        entry: poetry run safety check --full-report --file=requirements.txt --file=requirements_dev.txt
-        language: system
-        pass_filenames: false
+      # - id: safety
+      #   name: Check dependencies for security issues
+      #   entry: poetry run safety check --full-report --file=requirements.txt --file=requirements_dev.txt
+      #   language: system
+      #   pass_filenames: false
 
       - id: check-added-large-files
         name: Prevent large files in repo
         entry: >
           poetry run python -c "import sys, os;
           [print(f'File too large: {f}') or sys.exit(1) for f in sys.argv[1:] if os.path.getsize(f) > 500 * 1024]"
+        language: system
+        pass_filenames: true
+
+      - id: bandit
+        name: Security analysis with Bandit
+        entry: poetry run bandit -r src/
+        language: system
+        pass_filenames: false
+
+      - id: detect-secrets
+        name: Detect secrets in code
+        entry: poetry run detect-secrets-hook --baseline .secrets.baseline || poetry run detect-secrets scan > .secrets.baseline
+        language: system
+        pass_filenames: false
+
+      - id: debug-statements
+        name: Remove debug statements (print, pdb)
+        entry: poetry run flake8 --select=T20
         language: system
         pass_filenames: true

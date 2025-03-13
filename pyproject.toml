@@ -27,6 +27,10 @@ psycopg = {extras = ["binary"], version = "^3.2.6"}
 pytest-dotenv = "^0.5.2"
 pre-commit-hooks = "^5.0.0"
 mypy = "^1.15.0"
+bandit = "^1.8.3"
+vulture = "^2.14"
+detect-secrets = "^1.5.0"
+pylint = "^3.3.5"
 
 [build-system]
 requires = ["poetry-core"]
@@ -35,10 +39,12 @@ build-backend = "poetry.core.masonry.api"
 [tool.taskipy.tasks]
 format = "isort . && blue ."
 precommit = "pre-commit run --all-files"
-precommit-install = "pre-commit install"
+precommit-install = "pre-commit install && pre-commit autoupdate"
 test = "pytest tests/"
 test-unit = "pytest tests/unit/"
 test-integration = "pytest tests/integration/"
+export-requirements = "poetry export --without-hashes --without=dev -o requirements.txt && poetry export --without-hashes --with=dev -o requirements_dev.txt"
+lint = "poetry run pylint src/"
 
 
 
