@@ -8,6 +8,9 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "3.11.5"
+psycopg2-binary = "^2.9.10"
+sqlalchemy = "^2.0.39"
+dotenv = "^0.9.9"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -21,3 +24,7 @@ poetry-plugin-export = "^1.9.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.taskipy.tasks]
+format = "isort . && blue ."
+test = "poetry run pytest -v"
