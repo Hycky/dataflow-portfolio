@@ -1,48 +1,50 @@
-# .pre-commit-config.yaml
 repos:
-  - repo: https://github.com/psf/black
-    rev: 24.3.0 # Verifique a versão mais recente
+  - repo: local
     hooks:
-      - id: black
-        name: blue
-        args: ['--line-length=88'] # Configuração padrão do Blue
+      - id: pytest
+        name: Run tests with pytest
+        entry: poetry run task test
+        language: system
+        pass_filenames: false
 
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.12.0 # Verifique a versão mais recente
-    hooks:
+      - id: blue
+        name: Format code with Blue
+        entry: poetry run blue
+        language: system
+        types: [python]
+        args: ['--line-length=88']
+
       - id: isort
-        args: ['--profile', 'black'] # Compatível com Blue/Black
+        name: Sort imports with isort
+        entry: poetry run isort
+        language: system
+        types: [python]
+        args: ['--profile', 'black'] # `blue` segue o mesmo padrão de `black`
 
-  - repo: https://github.com/pycqa/flake8
-    rev: 6.1.0 # Verifique a versão mais recente
-    hooks:
       - id: flake8
+        name: Lint code with Flake8
+        entry: poetry run flake8
+        language: system
+        types: [python]
         args: ['--max-line-length=88']
 
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.8.0 # Verifique a versão mais recente
-    hooks:
       - id: mypy
+        name: Type check with MyPy
+        entry: poetry run mypy
+        language: system
+        types: [python]
+        pass_filenames: true
 
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0 # Verifique a versão mais recente
-    hooks:
-      - id: trailing-whitespace # Remove espaços em branco no final das linhas
-      - id: end-of-file-fixer # Garante uma linha vazia no final do arquivo
-      - id: check-yaml # Valida arquivos YAML
-      - id: check-json # Valida arquivos JSON
-
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0 # Verifique a versão mais recente
-    hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-      - id: check-yaml
-      - id: check-json
-      - id: check-added-large-files
-        args: ['--maxkb=500'] # Define um limite de 500 KB por arquivo
-
-  - repo: https://github.com/pyupio/safety
-    rev: v2.3.5 # Verifique a versão mais recente
-    hooks:
       - id: safety
+        name: Check dependencies for security issues
+        entry: poetry run safety check --full-report --file=requirements.txt --file=requirements_dev.txt
+        language: system
+        pass_filenames: false
+
+      - id: check-added-large-files
+        name: Prevent large files in repo
+        entry: >
+          poetry run python -c "import sys, os;
+          [print(f'File too large: {f}') or sys.exit(1) for f in sys.argv[1:] if os.path.getsize(f) > 500 * 1024]"
+        language: system
+        pass_filenames: true
