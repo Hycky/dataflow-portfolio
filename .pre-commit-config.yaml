@@ -1,4 +1,12 @@
 repos:
+  - repo: local #esse pasa direto
+    hooks:
+      - id: pass-hook
+        name: Passa sem verificar
+        entry: echo "Pre-commit bypassado!"
+        language: system
+        always_run: true
+        
   - repo: local
     hooks:
       - id: pytest
